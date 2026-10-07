@@ -24,10 +24,3 @@ def duplicates(df):
     print(f"\nDuplicate rows: {duplicate_count}")
     return duplicate_count
 
-def describe_data(df):
-
-    summary = df.describe()
-    print("\nSummary statistics:")
-    print(summary)
-    
-    return summary
