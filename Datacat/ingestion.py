@@ -2,7 +2,7 @@ from pathlib import Path
 import pandas as pd
 
 
-folder = Path(r"C:\Users\ferre\Desktop\College\Coding\Datacat\data\get_data")
+folder = Path(r"C:\Users\ferre\Desktop\College\Coding\Datacat\data\raw")
 
 
 def get_data(filename):
