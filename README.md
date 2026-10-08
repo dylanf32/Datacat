@@ -2,6 +2,28 @@
 
 Datacat is a Python command-line project for exploring tabular data. Load a CSV or Excel file, inspect its quality, clean it, run statistical summaries, and create plots from one interactive menu. Optional MySQL support lets you save the current dataset as a new table and load query results for further analysis.
 
+**Stage:** v1 core analysis workflow. The natural-language AI agent is planned for Part II.
+
+**Stack:** Python · Pandas · NumPy · Statsmodels · Matplotlib · Seaborn · SQLAlchemy · MySQL
+
+[Features](#features) · [Setup](#setup) · [Usage](#usage) · [MySQL](#optional-mysql-setup) · [Architecture](#module-guide) · [Roadmap](#roadmap)
+
+## Workflow
+
+```mermaid
+flowchart TD
+    A["CSV / XLSX"] --> B["Load dataset"]
+    B --> C["Interactive menu"]
+    C --> D["Profile and clean"]
+    D --> C
+    C --> E["Statistics"]
+    C --> F["Plots"]
+    C --> G["Optional MySQL"]
+    G -->|Query results| C
+    E --> H["CSV reports"]
+    F --> I["PNG figures"]
+```
+
 ## Features
 
 - **Ingestion:** read `.csv` and `.xlsx` files and export processed data as CSV.
@@ -108,3 +130,23 @@ Schema.png, schema_vs.png  Project diagrams
 ```
 
 The `.sqlproj` file targets SQL Server tooling; it is not a MySQL initialization script and is not used by `main.py`. Statistical and plotting dependencies are imported when their menu options are selected, as are the database dependencies. The application reads Excel's default first sheet and does not offer sheet selection or automatic date parsing for CSV files.
+
+## Module guide
+
+| File | Responsibility |
+| --- | --- |
+| [main.py](main.py) | Interactive menu, dataset state, and exports |
+| [Datacat/ingestion.py](Datacat/ingestion.py) | CSV/XLSX loading and processed CSV export |
+| [Datacat/profiling.py](Datacat/profiling.py) | Dataset overview, missing values, and duplicates |
+| [Datacat/cleaning.py](Datacat/cleaning.py) | Missing-value handling, deduplication, and outlier inspection |
+| [Datacat/statistic.py](Datacat/statistic.py) | Summary, mean, Spearman correlation, and one-way ANOVA |
+| [Datacat/visualization.py](Datacat/visualization.py) | Scatter, box, violin, histogram, and heatmap plots |
+| [Datacat/database.py](Datacat/database.py) | MySQL connections, table writes, and query results |
+
+## Roadmap
+
+The current application uses explicit menu choices. Future work includes a natural-language agent that calls these existing tools, followed by machine-learning capabilities. Q-Q plots, t-tests, chi-square tests, and standalone regression analysis are future extensions rather than current menu features.
+
+## Author
+
+Developed by [Dylan Ferrer](https://github.com/dylanf32) as a data science portfolio project.
