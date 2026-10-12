@@ -34,3 +34,8 @@ def correlation(df):
     print(correlation)
 
     return correlation
+
+def confidence_interval():
+
+    return confidence_interval
+
