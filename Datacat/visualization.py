@@ -110,10 +110,14 @@ def heatmap_plot(df):
 
 def bar_chart(df, x_column, y_column):
 
-    bar_chart= sns.barplot(data=df, x=df[x_column],y=df[y_column])
+    fig, ax = plt.subplots()
+
+    sns.barplot(data=df, x=df[x_column],y=df[y_column])
     
 
-    return bar_chart
+    return fig
+
+
 
 
 
