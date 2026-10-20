@@ -36,7 +36,7 @@ def main():
             if choice == "1":
 
                 profiling.overview(df)
-                profiling.missing_val_drop(df)
+                profiling.missing_val(df)
                 profiling.duplicates(df)
 
             elif choice == "2":

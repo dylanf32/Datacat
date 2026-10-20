@@ -28,12 +28,20 @@ def mean(df, column):
     return y
 
 
-def correlation(df):
+def correlation_pearson(df):
 
-    correlation = df.corr(method="spearman", numeric_only=True)
+    correlation = df.corr(method="pearson", numeric_only=True)
     print(correlation)
 
     return correlation
+
+def correlation_spearman(df):
+
+    correlation = df.corr(method="Spearman", numeric_only=True)
+    print(correlation)
+
+    return correlation
+
 
 def confidence_interval():
 

@@ -117,7 +117,13 @@ def bar_chart(df, x_column, y_column):
 
     return fig
 
+def box_plot(df,x_column):
 
+    fig, ax = plt.subplots()
+
+    plt.boxplot(df[x_column])
+    
+    return fig
 
 
 
