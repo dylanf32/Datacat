@@ -28,9 +28,21 @@ def mean(df, column):
     return y
 
 
-def correlation(df):
+def correlation_pearson(df):
+
+    correlation = df.corr(method="pearson", numeric_only=True)
+    print(correlation)
+
+    return correlation
+
+def correlation_spearman(df):
 
     correlation = df.corr(method="spearman", numeric_only=True)
     print(correlation)
 
     return correlation
+
+
+def correlation(df):
+    """Keep the command-line Spearman correlation interface available."""
+    return correlation_spearman(df)

@@ -2,7 +2,7 @@ from pathlib import Path
 import pandas as pd
 
 
-folder = Path(r"C:\Users\ferre\Desktop\College\Coding\Datacat\data\get_data")
+folder = Path(__file__).resolve().parents[1] / "data" / "raw"
 
 
 def get_data(filename):
@@ -22,7 +22,7 @@ def get_data(filename):
 
 
 def processed(df, filename):
-    folder = Path(r"C:\Users\ferre\Desktop\College\Coding\Datacat\data\processed_data")
+    folder = Path(__file__).resolve().parents[1] / "data" / "processed_data"
     
     folder.mkdir(parents=True, exist_ok=True)
     name = f"{filename}.csv"
