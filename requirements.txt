@@ -6,3 +6,4 @@ matplotlib
 seaborn
 SQLAlchemy
 PyMySQL
+streamlit>=1.66.1,<2

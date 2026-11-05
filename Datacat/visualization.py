@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 
-def scatterplot(df, x_column, y_column):
+def scatterplot(df, x_column, y_column, *, show=True):
 
     fig, ax = plt.subplots()
 
@@ -10,12 +10,13 @@ def scatterplot(df, x_column, y_column):
     ax.set_xlabel(x_column)
     ax.set_ylabel(y_column)
 
-    plt.show()
+    if show:
+        plt.show()
 
     return fig
 
 
-def boxplot(df, x_column):
+def boxplot(df, x_column, *, show=True):
 
     fig, ax = plt.subplots()
 
@@ -37,12 +38,13 @@ def boxplot(df, x_column):
     ax.set_xticklabels([x_column])
     ax.set_ylabel(x_column)
 
-    plt.show()
+    if show:
+        plt.show()
 
     return fig
 
 
-def violin_plot(df, x_column):
+def violin_plot(df, x_column, *, show=True):
 
     values = df[x_column].dropna()
 
@@ -67,23 +69,25 @@ def violin_plot(df, x_column):
     ax.set_xticklabels([x_column])
     ax.set_ylabel(x_column)
 
-    plt.show()
+    if show:
+        plt.show()
 
     return fig
 
 
-def histogram_plot(df, x_column):
+def histogram_plot(df, x_column, *, show=True):
 
     fig, ax = plt.subplots()
 
     sns.histplot(data=df, x=x_column, ax=ax)
 
-    plt.show()
+    if show:
+        plt.show()
 
     return fig
 
 
-def heatmap_plot(df):
+def heatmap_plot(df, *, show=True):
 
     correlation = df.corr(numeric_only=True)
 
@@ -103,7 +107,8 @@ def heatmap_plot(df):
     )
 
     plt.tight_layout()
-    plt.show()
+    if show:
+        plt.show()
 
     return fig
 
@@ -112,7 +117,7 @@ def bar_chart(df, x_column, y_column):
 
     fig, ax = plt.subplots()
 
-    sns.barplot(data=df, x=df[x_column],y=df[y_column])
+    sns.barplot(data=df, x=x_column, y=y_column, ax=ax)
     
 
     return fig
@@ -121,9 +126,6 @@ def box_plot(df,x_column):
 
     fig, ax = plt.subplots()
 
-    plt.boxplot(df[x_column])
+    ax.boxplot(df[x_column].dropna())
     
     return fig
-
-
-

@@ -12,3 +12,6 @@ data/processed_data/*.csv
 .env
 .env.*
 !.env.example
+
+# Local test cache
+.pytest_cache/

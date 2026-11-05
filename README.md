@@ -1,6 +1,6 @@
 # Datacat
 
-Datacat is a Python command-line project for exploring tabular data. Load a CSV or Excel file, inspect its quality, clean it, run statistical summaries, and create plots from one interactive menu. Optional MySQL support lets you save the current dataset as a new table and load query results for further analysis.
+Datacat is a Python dashboard and command-line project for exploring tabular data. Load a CSV or Excel file, inspect its quality, clean it, run statistical summaries, and create plots through a Streamlit dashboard or an interactive terminal menu. The command-line app also offers optional MySQL support to save the current dataset as a new table and load query results for further analysis.
 
 **Stage:** v1 core analysis workflow. The natural-language AI agent is planned for Part II.
 
@@ -13,12 +13,12 @@ Datacat is a Python command-line project for exploring tabular data. Load a CSV 
 ```mermaid
 flowchart TD
     A["CSV / XLSX"] --> B["Load dataset"]
-    B --> C["Interactive menu"]
+    B --> C["Dashboard or terminal menu"]
     C --> D["Profile and clean"]
     D --> C
     C --> E["Statistics"]
     C --> F["Plots"]
-    C --> G["Optional MySQL"]
+    C --> G["MySQL (terminal only)"]
     G -->|Query results| C
     E --> H["CSV reports"]
     F --> I["PNG figures"]
@@ -28,10 +28,11 @@ flowchart TD
 
 - **Ingestion:** read `.csv` and `.xlsx` files and export processed data as CSV.
 - **Profiling:** show column types, dataset dimensions, the first five rows, missing-value counts, and duplicate-row counts.
-- **Cleaning:** drop rows with missing values, fill numeric missing values with column means, remove duplicates, or print potential outliers with absolute population z-scores greater than 3.
-- **Statistics:** descriptive summaries, a column mean, numeric Spearman correlations, and one-way ANOVA using a categorical grouping column.
+- **Cleaning:** drop rows with missing values, fill numeric missing values with column means, remove duplicates, or print potential outliers in the terminal with absolute population z-scores greater than 3.
+- **Statistics:** descriptive summaries, a column mean, numeric Spearman correlations, and one-way ANOVA using a grouping column. The Python module also exposes Pearson correlation.
 - **Visualization:** scatter, box, violin, and histogram plots, plus a numeric Pearson correlation heatmap.
-- **MySQL:** save a new table, display query results, optionally export them, and optionally use them as the current dataset.
+- **Dashboard:** upload a file, navigate analysis sections, reset cleaning changes, and download CSV reports or PNG figures.
+- **MySQL (terminal):** save a new table, display query results, optionally export them, and optionally use them as the current dataset.
 
 ## Setup
 
@@ -45,27 +46,27 @@ python -m venv .venv
 python -m pip install -r requirements.txt
 ```
 
-On macOS or Linux, activate the environment with `source .venv/bin/activate` instead. Dependencies are not version-pinned; the repository does not currently specify a tested Python version or automated test suite.
+On macOS or Linux, activate the environment with `source .venv/bin/activate` instead. Use Python 3.12 or newer. Dependencies are not locked; Streamlit requires version 1.66.1 or newer within the 1.x series. GitHub Actions runs lint and tests with Python 3.12.
 
-### Configure the data folders
+## Run the dashboard
 
-Before running the app, edit the two folder paths in [Datacat/ingestion.py](Datacat/ingestion.py). They currently point to the author's local Windows directory. For a portable checkout, use these expressions:
-
-```python
-# Module-level input folder:
-folder = Path(__file__).resolve().parents[1] / "data" / "get_data"
-
-# Output folder inside processed():
-folder = Path(__file__).resolve().parents[1] / "data" / "processed_data"
+```powershell
+python -m streamlit run app.py
 ```
 
-Place input files in `data/get_data/`. The repository includes `Order_delivery.csv` as an example. The files in `config/` are placeholders and do not configure the application.
+Open the local URL printed in the terminal (normally `http://localhost:8501`). Upload a `.csv` or `.xlsx` file using the sidebar. Navigate **Overview**, **Clean data**, **Statistical analysis**, **Visualization**, and **Export**. Cleaning changes remain in the current session; use **Reset to original data** to undo them. Download your results before ending the session. Uploading different file contents starts a new working dataset.
+
+The dashboard reads uploads directly and does not require MySQL or a configured data directory. Excel uploads use the first sheet. This repository contains the runnable dashboard source; these instructions launch it locally and do not imply a hosted deployment.
 
 ## Usage
+
+For the command-line app, place input files in `data/raw/`, then run:
 
 ```powershell
 python main.py
 ```
+
+The included `Order_delivery.csv` is a sample dataset. Input and processed-data paths resolve relative to the repository, so no local Windows path edits are needed. Files in `config/` remain placeholders.
 
 Enter a filename including its extension, such as `Order_delivery.csv`, then select an option:
 
@@ -83,13 +84,13 @@ Cleaning updates the dataset held in memory. Choose option 3 to write it to disk
 
 For an example workflow, load `Order_delivery.csv`, profile it, remove duplicates if needed, then use `Delivery_Duration_Minutes` for a histogram or `City` and `Delivery_Duration_Minutes` for one-way ANOVA. ANOVA results require appropriate assumptions and interpretation; the application does not check those assumptions automatically.
 
-Plot windows open before the save prompt. Close the plot window to return to the menu and choose whether to save it.
+In the terminal app, plot windows open before the save prompt. Close the plot window to return to the menu and choose whether to save it.
 
-### Saved files
+### Terminal exports
 
 | Output | Location |
 | --- | --- |
-| Processed dataset | Configured processed-data folder, as `<dataset>.csv` |
+| Processed dataset | `data/processed_data/`, as `<dataset>.csv` |
 | Summary, correlation, or ANOVA table | `outputs/tables/<dataset>_<analysis>.csv` |
 | Query results | `outputs/tables/<dataset>_query.csv` |
 | Plot | `outputs/figures/<dataset>_<plot>.png` |
@@ -120,13 +121,13 @@ The menu asks for a SELECT query, but the module passes the supplied SQL to SQLA
 Datacat/                 Reusable ingestion, profiling, cleaning, statistics,
                          visualization, and database modules
 main.py                  Interactive menu and dataset state
-data/get_data/           Input data and the example CSV
+data/raw/                Input data and the example CSV
 data/processed_data/     Intended processed-data directory
-notebooks/               Exploratory notebooks; 02_profiling contains cells,
-                         while the other notebooks are placeholders
+app.py                   Streamlit dashboard and browser downloads
+notebooks/               Placeholder notebooks for future exploration
 config/                  Configuration placeholders
 database/                SQL project and connection placeholder
-Schema.png, schema_vs.png  Project diagrams
+image.png                Existing project image
 ```
 
 The `.sqlproj` file targets SQL Server tooling; it is not a MySQL initialization script and is not used by `main.py`. Statistical and plotting dependencies are imported when their menu options are selected, as are the database dependencies. The application reads Excel's default first sheet and does not offer sheet selection or automatic date parsing for CSV files.
@@ -135,17 +136,28 @@ The `.sqlproj` file targets SQL Server tooling; it is not a MySQL initialization
 
 | File | Responsibility |
 | --- | --- |
+| [app.py](app.py) | Dashboard upload, session state, navigation, and downloads |
 | [main.py](main.py) | Interactive menu, dataset state, and exports |
 | [Datacat/ingestion.py](Datacat/ingestion.py) | CSV/XLSX loading and processed CSV export |
 | [Datacat/profiling.py](Datacat/profiling.py) | Dataset overview, missing values, and duplicates |
 | [Datacat/cleaning.py](Datacat/cleaning.py) | Missing-value handling, deduplication, and outlier inspection |
-| [Datacat/statistic.py](Datacat/statistic.py) | Summary, mean, Spearman correlation, and one-way ANOVA |
+| [Datacat/statistic.py](Datacat/statistic.py) | Summary, mean, Pearson/Spearman correlation, and one-way ANOVA |
 | [Datacat/visualization.py](Datacat/visualization.py) | Scatter, box, violin, histogram, and heatmap plots |
 | [Datacat/database.py](Datacat/database.py) | MySQL connections, table writes, and query results |
 
+## Development checks
+
+```powershell
+python -m pip install pytest flake8
+python -m pytest
+python -m flake8 . --exclude=.venv,venv --select=E9,F63,F7,F82 --show-source
+```
+
+The tests exercise dashboard navigation, cleaning/reset, statistics, plots, file ingestion, and the terminal menu. They do not require a MySQL server; live MySQL connectivity is not covered. `Datacat/validation.py` and the remaining notebooks are placeholders, not implemented validation features.
+
 ## Roadmap
 
-The current application uses explicit menu choices. Future work includes a natural-language agent that calls these existing tools, followed by machine-learning capabilities. Q-Q plots, t-tests, chi-square tests, and standalone regression analysis are future extensions rather than current menu features.
+The current application uses explicit dashboard controls and terminal menu choices. Future work includes a natural-language agent that calls these existing tools, followed by machine-learning capabilities. Q-Q plots, t-tests, chi-square tests, and standalone regression analysis are future extensions rather than current menu features.
 
 ## Author
 

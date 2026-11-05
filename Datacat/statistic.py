@@ -37,13 +37,12 @@ def correlation_pearson(df):
 
 def correlation_spearman(df):
 
-    correlation = df.corr(method="Spearman", numeric_only=True)
+    correlation = df.corr(method="spearman", numeric_only=True)
     print(correlation)
 
     return correlation
 
 
-def confidence_interval():
-
-    return confidence_interval
-
+def correlation(df):
+    """Keep the command-line Spearman correlation interface available."""
+    return correlation_spearman(df)

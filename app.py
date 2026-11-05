@@ -382,20 +382,20 @@ elif section == "Visualization":
 
         try:
             if action == "Histogram":
-                fig = visualization.histogram_plot(df, x)
+                fig = visualization.histogram_plot(df, x, show=False)
 
             elif action == "Box plot":
-                fig = visualization.boxplot(df, x)
+                fig = visualization.boxplot(df, x, show=False)
 
             elif action == "Violin plot":
-                fig = visualization.violin_plot(df, x)
+                fig = visualization.violin_plot(df, x, show=False)
 
             elif action == "Scatter plot":
-                fig = visualization.scatterplot(df, x, y)
+                fig = visualization.scatterplot(df, x, y, show=False)
 
             else:
                 st.caption("This heatmap uses Pearson correlation.")
-                fig = visualization.heatmap_plot(df)
+                fig = visualization.heatmap_plot(df, show=False)
 
             st.pyplot(
                 fig,
